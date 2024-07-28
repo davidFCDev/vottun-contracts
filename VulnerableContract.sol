@@ -1,17 +1,24 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-contract VulnerableContract {
-    uint256 public sensitiveData;
+contract Vulnerable {
     address public owner;
 
     constructor() {
         owner = msg.sender;
     }
 
-    // Esta función debería ser 'internal' o 'private'
-    function updateSensitiveData(uint256 _newData) public {
-        require(msg.sender == owner, "Only the owner can update sensitive data");
-        sensitiveData = _newData;
+    modifier onlyOwner() {
+        require(msg.sender == owner, "Not the owner");
+        _;
+    }
+
+    // Función incorrecta
+    function changeOwner(address _newOwner) internal onlyOwner {
+        owner = _newOwner;
+    }
+
+    function updateOwner(address _newOwner) public {
+        changeOwner(_newOwner);
     }
 }
